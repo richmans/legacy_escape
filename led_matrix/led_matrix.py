@@ -7,13 +7,18 @@ from copy import deepcopy
 
 class Screen:
   def __init__(self, width,height):
-    self.data = [[False] * width for _ in range(height)]
+    self.width = width
+    self.height = height
+    self.clear()
   
   def on(self, x, y):
     self.data[y][x] = True
   
   def off(self, x , y):
     self.data[y][x] = False
+
+  def clear(self):
+    self.data = [[False] * self.width for _ in range(self.height)]
 
   def __repr__(self):
     return "screen:\n" + "\n".join(["".join(['O' if c else ' ' for c in r]) for r in self.data])
@@ -59,14 +64,18 @@ class LEDMatrix:
 
   def test(self):
     logging.info("Testing...")
-    m.screen.on(0,0)
-    m.screen.on(1,8)
-    m.screen.on(2,16)
-    m.screen.on(3,24)
-    logging.debug(self.screen)
-
-    m.update()
-
+    ypos = 0
+    xpos = 0
+    spd = 1
+    while True:
+      self.screen.clear()
+      self.screen.on(xpos , ypos)
+      ypos = (ypos + 1) % 32
+      xpos = xpos + spd
+      if xpos == 7 or xpos == 0:
+        spd = -1 * spd
+      self.update()
+      time.sleep(0.04)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser("LED Matrix test program")

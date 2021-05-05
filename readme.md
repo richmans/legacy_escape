@@ -27,3 +27,6 @@ Test functionality:
 Important lesson: the max-chip supports speeds up to 10mhz. we need to configure the spidev lib to set the speed to 8mhz or less!
 
 Give your user access to spi: `sudo usermod -a -G spi pi`
+
+Test the led matrix: `python3 led_matrix.py -d`
+

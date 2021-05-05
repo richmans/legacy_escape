@@ -17,6 +17,9 @@ class Screen:
   def off(self, x , y):
     self.data[y][x] = False
 
+  def paint(self, x, y, v):
+    self.data[y][x] = v
+
   def clear(self):
     self.data = [[False] * self.width for _ in range(self.height)]
 

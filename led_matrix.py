@@ -3,28 +3,7 @@ import time
 import argparse
 import logging
 from copy import deepcopy
-
-
-class Screen:
-  def __init__(self, width,height):
-    self.width = width
-    self.height = height
-    self.clear()
-  
-  def on(self, x, y):
-    self.data[y][x] = True
-  
-  def off(self, x , y):
-    self.data[y][x] = False
-
-  def paint(self, x, y, v):
-    self.data[y][x] = v
-
-  def clear(self):
-    self.data = [[False] * self.width for _ in range(self.height)]
-
-  def __repr__(self):
-    return "screen:\n" + "\n".join(["".join(['O' if c else ' ' for c in r]) for r in self.data])
+from screen import Screen
 
 class LEDMatrix:
   def __init__(self, bus=0, device=0, rotate=1):
@@ -34,7 +13,6 @@ class LEDMatrix:
     self.spi = spidev.SpiDev()
     self.spi.open(bus, device)
     self.spi.max_speed_hz = 8000000
-    self.screen = Screen(8, 32)
     self.send([0xb, 7]*4)
     self.send([0x9, 0]*4)
     self.send([0xc, 1]*4)
@@ -53,8 +31,8 @@ class LEDMatrix:
         res +=1
     return res
 
-  def update(self):
-    data = self.screen.data
+  def update(self, screen):
+    data = screen.data
     parts = [data[i:i + 8] for i in range(0, len(data), 8)]
     parts.reverse()
     parts = [list(zip(*p[::-1])) for p in parts]
@@ -65,19 +43,19 @@ class LEDMatrix:
         data.append(self.row_to_int(p[i]))
       self.send(data)
 
-  def test(self):
+  def test(self, screen):
     logging.info("Testing...")
     ypos = 0
     xpos = 0
     spd = 1
     while True:
-      self.screen.clear()
-      self.screen.on(xpos , ypos)
+      screen.clear()
+      screen.on(xpos , ypos)
       ypos = (ypos + 1) % 32
       xpos = xpos + spd
       if xpos == 7 or xpos == 0:
         spd = -1 * spd
-      self.update()
+      self.update(data)
       time.sleep(0.04)
 
 if __name__ == '__main__':
@@ -89,5 +67,6 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
   else:
     logging.basicConfig(level=logging.INFO)
+  s = Screen(8,32)
   m = LEDMatrix()
-  m.test()
+  m.test(s)

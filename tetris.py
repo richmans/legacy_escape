@@ -19,7 +19,28 @@ class Tetromino:
   def rotated(self):
     rotated_data = list(zip(*self.data[::-1]))
     return Tetromino(self.name, rotated_data)
-    
+  
+class Stack:
+  def __init__(self, width, height):
+    self.width = width
+    self.height = height
+    self.reset()
+  
+  def reset(self):
+    self.data = [[False] * self.width for _ in range(self.height)]
+  
+  def land(self, tetromino, x, y):
+    for tx in range(tetromino.width):
+      for ty in range(tetromino.height):
+        self.data[y + ty][x + tx] = tetromino.data[ty][tx]
+
+  def collision(self, tetromino, x, y):
+    for tx in range(tetromino.width):
+      for ty in range(tetromino.height):
+        if self.data[y + ty][x + tx] and tetromino.data[ty][tx]:
+          return True
+    return False
+
 class Tetris:
   tetrominos = [
     Tetromino("O", [[True,True], [True,True]]),
@@ -32,49 +53,68 @@ class Tetris:
   ]
 
   def __init__(self, screen, controller):
-    self.s = screen
-    self.c = controller
-    self.select_tetromino()
+    self.scr = screen
+    self.ctrl = controller
+    self.stack = Stack(screen.width, screen.height)
+    self.reset()
+  
+  def lost(self):
+    self.reset()
     
+  
+  def reset(self):
+    self.stack.reset()
+    self.select_tetromino()
+
   def select_tetromino(self):
     self.current = deepcopy(random.choice(self.tetrominos))
     self.y = 0
     self.x = math.ceil((8 - self.current.width) / 2)
+    if self.stack.collision(self.current, self.x, self.y):
+      self.lost()
 
-  def paint_tetromino(self):
-    y = self.y
-    for r in self.current.data:
-      x = self.x
+  def paint_data(self, data, atx, aty):
+    y = aty
+    for r in data:
+      x = atx
       for c in r:
-        self.s.paint(x,y,c)
+        self.scr.paint(x,y,c)
         x += 1
       y += 1
 
   def is_landed(self):
-    return self.current.height + self.y >= 32
+    if self.current.height + self.y >= self.scr.height:
+      return True
+    if self.stack.collision(self.current, self.x, self.y + 1):
+      return True
+    return False
 
   def update_position(self):
     if self.is_landed():
+      self.stack.land(self.current, self.x, self.y)
       self.select_tetromino()
     else:
       self.y += 1
     
   def rotate(self):
-    if self.x + self.current.height >= self.s.width:
+    if self.x + self.current.height >= self.scr.width:
       return
-    self.current = self.current.rotated()
+    rotated = self.current.rotated()
+    if not self.stack.collision(rotated, self.x, self.y):
+      self.current = rotated
   
   def left(self):
     if self.x > 0:
       self.x -= 1
   
   def right(self):
-    if self.x + self.current.width < self.s.width:
+    if self.x + self.current.width < self.scr.width:
       self.x += 1
+
   def run(self):
-    self.c.start()
+    self.ctrl.start()
     while True:
-      cmd = self.c.get()
+      cmd = self.ctrl.get()
       if cmd == 'exit':
         break
       elif cmd == 'rotate':
@@ -84,9 +124,10 @@ class Tetris:
       elif cmd == 'right':
         self.right()
       self.update_position()
-      self.s.clear()
-      self.paint_tetromino()
-      self.s.update()
+      self.scr.clear()
+      self.paint_data(self.stack.data, 0, 0)
+      self.paint_data(self.current.data, self.x, self.y)
+      self.scr.update()
       time.sleep(0.2)
 
 

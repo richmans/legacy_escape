@@ -22,6 +22,6 @@ class Screen:
     self.output.update(self)
 
   def __repr__(self):
-    return "\r\n".join(["".join(['O' if c else ' ' for c in r]) for r in self.data])
+    return "\r\n".join(["".join(['x' if c else '.' for c in r]) for r in self.data])
 
   

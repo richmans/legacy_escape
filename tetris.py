@@ -32,7 +32,7 @@ class Stack:
   def land(self, tetromino, x, y):
     for tx in range(tetromino.width):
       for ty in range(tetromino.height):
-        self.data[y + ty][x + tx] = tetromino.data[ty][tx]
+        self.data[y + ty][x + tx] |= tetromino.data[ty][tx]
 
   def collision(self, tetromino, x, y):
     for tx in range(tetromino.width):
@@ -78,7 +78,8 @@ class Tetris:
     for r in data:
       x = atx
       for c in r:
-        self.scr.paint(x,y,c)
+        if c:
+          self.scr.on(x,y)
         x += 1
       y += 1
 
@@ -106,13 +107,13 @@ class Tetris:
   def left(self):
     if self.x <= 0:
       return
-    if not self.stack.collision(rotated, self.x -1 , self.y):
+    if not self.stack.collision(self.current, self.x -1 , self.y):
       self.x -= 1
 
   def right(self):
     if self.x + self.current.width >= self.scr.width:
       return
-    if not self.stack.collision(rotated, self.x +1 , self.y):
+    if not self.stack.collision(self.current, self.x +1 , self.y):
       self.x += 1
 
   def run(self):

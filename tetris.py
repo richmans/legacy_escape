@@ -104,11 +104,15 @@ class Tetris:
       self.current = rotated
   
   def left(self):
-    if self.x > 0:
+    if self.x <= 0:
+      return
+    if not self.stack.collision(rotated, self.x -1 , self.y):
       self.x -= 1
-  
+
   def right(self):
-    if self.x + self.current.width < self.scr.width:
+    if self.x + self.current.width >= self.scr.width:
+      return
+    if not self.stack.collision(rotated, self.x +1 , self.y):
       self.x += 1
 
   def run(self):

@@ -14,7 +14,16 @@ clk -> clk (23)
 we basically need python and pip `sudo apt-get install python3-dev python3-pip`
 and spidev: `sudo pip3 install spidev`
 
-### bringup
+Give your user access to spi: `sudo usermod -a -G spi pi` and also `sudo usermod -a -G dialout pi` 
+
+# What can you do with this?
+Test the led matrix: `python3 led_matrix.py -d`
+
+Play tetris: `python3 tetris.py`
+
+Hook up your digirule 2u, set it to debug mode, and watch the memory: `python3 digirule.py`
+
+### bringup notes
 Here's an example library that seems to work correctly
 https://github.com/rm-hull/luma.led_matrix
 
@@ -25,8 +34,4 @@ Test functionality:
 `sudo python3 examples/matrix_demo.py --cascaded 4 --block-orientation 90 --reverse-order 1`
 
 Important lesson: the max-chip supports speeds up to 10mhz. we need to configure the spidev lib to set the speed to 8mhz or less!
-
-Give your user access to spi: `sudo usermod -a -G spi pi`
-
-Test the led matrix: `python3 led_matrix.py -d`
 

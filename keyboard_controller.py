@@ -35,6 +35,11 @@ class KeyboardController(threading.Thread):
       self.cmd = 'rotate'
 
   def run(self):
+    print("q: exit")
+    print("a: left")
+    print("f: right")
+    print("d: drop")
+    print("s: rotate")
     while True:
       ch = self.getch()
       self.set_command(ch)

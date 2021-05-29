@@ -55,7 +55,7 @@ class LEDMatrix:
       xpos = xpos + spd
       if xpos == 7 or xpos == 0:
         spd = -1 * spd
-      self.update(data)
+      screen.update()
       time.sleep(0.04)
 
 if __name__ == '__main__':
@@ -67,6 +67,6 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
   else:
     logging.basicConfig(level=logging.INFO)
-  s = Screen(8,32)
   m = LEDMatrix()
+  s = Screen(8,32,m)
   m.test(s)

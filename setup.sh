@@ -7,3 +7,5 @@ else
 fi
 
 sudo apt install -y python3-spidev
+sudo usermod -a -G dialout pi
+sudo usermod -a -G spi pi

@@ -35,3 +35,7 @@ Test functionality:
 
 Important lesson: the max-chip supports speeds up to 10mhz. we need to configure the spidev lib to set the speed to 8mhz or less!
 
+
+# rotary encoder
+
+Nice blog about setting up: https://blog.ploetzli.ch/2018/ky-040-rotary-encoder-linux-raspberry-pi/

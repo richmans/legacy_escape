@@ -6,7 +6,7 @@ class RotaryController(threading.Thread):
     super().__init__(daemon=True)
     self.cmd = None
     devices = [evdev.InputDevice(fn) for fn in evdev.list_devices()]
-    devices = {dev.fd: dev for dev in devices}
+    self.devices = {dev.fd: dev for dev in devices}
 
   def get(self):
     # There is a race condition here. I don't care.
@@ -16,10 +16,10 @@ class RotaryController(threading.Thread):
     return cmd
 
   def get_event(self):
-    r, w, x = select.select(devices, [], [])
+    r, w, x = select.select(self.devices, [], [])
     if len(r) > 0:
       fd = r[0]
-      events = devices[fd].read()
+      events = self.devices[fd].read()
       if len(events) > 0:
         event = evdev.util.categorize(events[0])
         return event

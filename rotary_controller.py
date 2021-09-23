@@ -25,7 +25,7 @@ class RotaryController(threading.Thread):
         return event
     return None
 
-  def set_command(self, ch):
+  def set_command(self, event):
     if isinstance(event, evdev.events.RelEvent):
       value = value + event.event.value
       print("Value: {0}".format(value))

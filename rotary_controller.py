@@ -29,9 +29,9 @@ class RotaryController(threading.Thread):
     if isinstance(event, evdev.events.RelEvent):
       value = event.event.value
       if value == 1:
-        self.cmd = 'left'
-      elif value == -1:
         self.cmd = 'right'
+      elif value == -1:
+        self.cmd = 'left'
     elif isinstance(event, evdev.events.KeyEvent):
       if event.keycode == "KEY_ENTER" and event.keystate == event.key_up:
         self.cmd = 'rotate'

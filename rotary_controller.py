@@ -19,7 +19,7 @@ class RotaryController(threading.Thread):
     r, w, x = select.select(self.devices, [], [])
     if len(r) > 0:
       fd = r[0]
-      events = self.devices[fd].read()
+      events = list(self.devices[fd].read())
       if len(events) > 0:
         event = evdev.util.categorize(events[0])
         return event

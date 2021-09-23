@@ -162,7 +162,11 @@ if __name__ == '__main__':
     from keyboard_controller import KeyboardController
     controller = KeyboardController()
   else:
-    from rotary_controller import RotaryController
+    try:
+      from rotary_controller import RotaryController
+    except ModuleNotFoundError:
+      print("Could not load rotary controller module. either `pip3 install evdev` or use the --keyboard flag", file=sys.stderr)
+      sys.exit(1)
     controller = RotaryController()
   screen = Screen(8,32, matrix)
   t = Tetris(screen, controller)

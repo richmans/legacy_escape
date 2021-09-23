@@ -28,7 +28,6 @@ class RotaryController(threading.Thread):
   def set_command(self, event):
     if isinstance(event, evdev.events.RelEvent):
       value = event.event.value
-      print("Value: {0}".format(value))
       if value == 1:
         self.cmd = 'left'
       elif value == -1:

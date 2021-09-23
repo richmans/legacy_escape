@@ -140,6 +140,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser("Tetris game on the led matrix")
   parser.add_argument("-d", "--debug", action='store_true', help="Enable debug output")
   parser.add_argument("-s", "--screen", action='store_true', help="Screen mode (disables the led matrix output)")
+  parser.add_argument("-k", "--keyboard", action='store_true', help="Keyboard mode (disables the rotary controller)")
   args = parser.parse_args()
 
   if args.debug:
@@ -157,8 +158,12 @@ if __name__ == '__main__':
       print("Could not load matrix module. either `pip3 install spidev` or use the --screen flag", file=sys.stderr)
       sys.exit(1)
     matrix = LEDMatrix()
-  from keyboard_controller import KeyboardController
-  controller = KeyboardController()
+  if args.keyboard:
+    from keyboard_controller import KeyboardController
+    controller = KeyboardController()
+  else:
+    from rotary_controller import RotaryController
+    controller = RotaryController()
   screen = Screen(8,32, matrix)
   t = Tetris(screen, controller)
   t.run()

@@ -1,3 +1,8 @@
+import argparse
+import logging
+from screen import Screen
+from led_matrix import LEDMatrix
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser("LED Matrix clear program")
   parser.add_argument("-d", "--debug", action='store_true', help="Enable debug output")

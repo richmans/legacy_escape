@@ -29,6 +29,13 @@ class Stack:
   def reset(self):
     self.data = [[False] * self.width for _ in range(self.height)]
   
+  def collapse(self):
+    # Remove all rows that are full
+    self.data = [r for r in self.data if not all(r)]
+    # Append empty rows at the top
+    while len(self.data) < self.height:
+      self.data.insert(0, [False] * self.width)
+      
   def land(self, tetromino, x, y):
     for tx in range(tetromino.width):
       for ty in range(tetromino.height):
@@ -93,6 +100,7 @@ class Tetris:
   def update_position(self):
     if self.is_landed():
       self.stack.land(self.current, self.x, self.y)
+      self.stack.collapse()
       self.select_tetromino()
     else:
       self.y += 1
